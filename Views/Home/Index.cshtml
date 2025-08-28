@@ -1,0 +1,28 @@
+﻿@using RentalStore.DTOs
+@{
+    ViewData["Title"] = "User Input";
+}
+@model List<ViewData>
+<h1>@ViewData["Title"]</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>FULL NAME</th>
+            <th>PHYSICAL ADDRESS</th>
+            <th>MOVIES RENTED</th>
+            <th>SALUTATION</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Name</td>
+                <td>@item.Address</td>
+                <td>@item.Movies</td>
+                <td>@item.Salutation</td>
+            </tr>
+        }
+    </tbody>
+</table>
