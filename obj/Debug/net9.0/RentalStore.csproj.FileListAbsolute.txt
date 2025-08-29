@@ -196,3 +196,4 @@ E:\____NewArc\DOTNET\RentalStore\bin\Debug\net9.0\zh-Hans\Microsoft.CodeAnalysis
 E:\____NewArc\DOTNET\RentalStore\bin\Debug\net9.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
 E:\____NewArc\DOTNET\RentalStore\obj\Debug\net9.0\RentalStore.csproj.AssemblyReference.cache
 E:\____NewArc\DOTNET\RentalStore\obj\Debug\net9.0\RentalSt.8F24EAAC.Up2Date
+E:\____NewArc\DOTNET\RentalStore\obj\Debug\net9.0\RentalStore.sourcelink.json

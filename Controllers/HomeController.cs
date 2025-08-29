@@ -6,23 +6,28 @@ using RentalStore.Data;
 using RentalStore.DTOs;
 using RentalStore.Model;
 using RentalStore.Models;
+using RentalStore.Services;
 
 namespace RentalStore.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly RentalStoreContext _context;
+        private readonly IUserService _userService;
+        private readonly IRentalService _rentalService;
+        private readonly IFilmService _filmService;
 
-        public HomeController(ILogger<HomeController> logger, RentalStoreContext context)
+        public HomeController(ILogger<HomeController> logger, IUserService userService, IFilmService filmService, IRentalService rentalService)
         {
             _logger = logger;
-            _context = context;
+            _filmService = filmService;
+            _rentalService = rentalService; 
+            _userService = userService;
         }
 
         public async Task<IActionResult> Index()
         {
-            List<ViewData> tabel = await _context.ViewDatas.ToListAsync();
+            List<ViewData> tabel = await _rentalService.GetRentals();
             return View("Views/Home/Index.cshtml", tabel);
         }
 
@@ -33,9 +38,9 @@ namespace RentalStore.Controllers
 
         public async Task<IActionResult> Input()
         {
-            var users = await _context.Users.ToListAsync();
+            var users = await _userService.GetUsers();
             var userList = new SelectList(users, "Id", "Name");
-            var films = await _context.Films.ToListAsync();
+            var films = await _filmService.GetFilms();
             var filmList = new SelectList(films, "Id", "Name");
             ViewBag.UserList = userList;
             ViewBag.FilmList = filmList;
@@ -45,15 +50,7 @@ namespace RentalStore.Controllers
         [HttpPost]
         public async Task<IActionResult> SubmitInput(RentalInputDTO input)
         {
-            Rental rental = new Rental
-            {
-                UserId = input.UserId,
-                FilmId = input.FilmId,
-                RentalDate = input.RentalDate,
-                DeadlineDate = input.DeadlineDate
-            };
-            _context.Rentals.Add(rental);
-            await _context.SaveChangesAsync();
+            await _rentalService.AddRental(input);
             return await Index();
         }
 
@@ -65,21 +62,13 @@ namespace RentalStore.Controllers
         [HttpPost]
         public async Task<IActionResult> SubmitFilmInput(Film input)
         {
-            Film film= new Film
-            {
-                Name = input.Name,
-                Description = input.Description,
-                Synopsis = input.Synopsis,
-                ReleaseDate = input.ReleaseDate
-            };
-            _context.Films.Add(film);
-            await _context.SaveChangesAsync();
+            await _filmService.AddFilm(input);
             return await Index();
         }
 
         public async Task<IActionResult> UserInput()
         {
-            var cities = await _context.Cities.ToListAsync();
+            var cities = await _userService.GetCities();
             var cityList = new SelectList(cities, "Id", "Name");
             var genders = new List<string>() { "male", "female" };
             var genderList = new SelectList(genders, "Name");
@@ -91,23 +80,7 @@ namespace RentalStore.Controllers
         [HttpPost]
         public async Task<IActionResult> SubmitUserInput(UserInputDTO input)
         {
-            User user = new User
-            {
-                Name = input.Name,
-                Email = input.Email,
-            };
-            await _context.Database.ExecuteSqlRawAsync("CALL add_user({0}, {1}, {2})", input.Name, input.Email, input.GenderUser);
-            await _context.SaveChangesAsync();
-            var newUser = await _context.Users.Where(u => u.Name == input.Name && u.Email == input.Email).FirstOrDefaultAsync();
-            Address address = new Address
-            {
-                UserId = newUser.Id,
-                Name = input.AddressName,
-                Num = input.AddressNumber,
-                CityId = input.CityId
-            };
-            _context.Addresses.Add(address);
-            await _context.SaveChangesAsync();
+            await _userService.AddUser(input);
             return await Index();
         }
 

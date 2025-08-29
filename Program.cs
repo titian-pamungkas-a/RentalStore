@@ -1,4 +1,6 @@
 using RentalStore.Data;
+using RentalStore.Repositories;
+using RentalStore.Services;
 
 namespace RentalStore
 {
@@ -10,6 +12,15 @@ namespace RentalStore
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<IRentalRepository, RentalRepository>();
+            builder.Services.AddScoped<IFilmRepository, FilmRepository>();
+
+            builder.Services.AddScoped<IRentalService, RentalService>();
+            builder.Services.AddScoped<IFilmService, FilmService>();
+            builder.Services.AddScoped<IUserService, UserService>();
+
             builder.Services.AddDbContext<RentalStoreContext>();
             var app = builder.Build();
 
